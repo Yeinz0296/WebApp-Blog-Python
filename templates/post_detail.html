@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %} - {{post.title}}{% endblock title %}
+
+{% block content %}
+<div class="container">
+<article>
+<div class="col-md-8 offset-md-2">
+    <figure>
+        <!-- featured image --> 
+        <img src="{{ post.image.url }}" class="rounded" alt="{{post.title}}" style="heigh:auto; max-width:100%;">
+    </figure>
+    <h1>{{ post.title }}</h1>
+    <small>
+        <p class="text-muted">
+            Published {{ post.publish.date }} by <strong>{{ post.author }}</strong>
+        </p>
+    </small>
+    <p>{{ post.body | safe }}</p>
+</div>
+</article>
+<p>
+        <strong>Tags:</strong>
+        {% for tag in post.tags.all %}
+            <a href="{% url 'blog:post_tag' tag.slug %}" class="link-light text-decoration-none badge bg-secondary">
+                {{tag.name}}
+            </a>
+            <!-- {% if not forloop.last %}, {% endif %} -->
+        {% endfor %}
+</p>
+
+<hr />
+<h3>Add Comment</h3>
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-primary">Comment</button>
+    </form>
+
+    {% with comments.count as total_comments %}
+        <h3 class="mt-5">
+            {{ total_comments }} comment{{ total_comments|pluralize }}
+        </h3>
+    {% endwith %}
+
+    {% if not post.comments.all %}
+        No comments yet
+    {% else %}
+        {% for comment in post.get_comments %}
+            {% include 'comment.html' with comment=comment %}
+        {% endfor %}
+    {% endif %}
+</div>
+
+{% endblock content %}

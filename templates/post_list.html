@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if tag %}
+    <h2 class="mb-3">Posts tagged with "{{ tag.name }}"</h2>
+{% endif %}
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+    
+        {% for post in posts %}
+        <div class="col-md-4">
+            <div class="card mb-2">
+                <img src="{{ post.image.url }}" class="rounded featured-image-list" alt="{{post.title}}">
+                <!-- featured image --> 
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <div class="text-muted">
+                            <small>
+                                Published {{ post.publish.date }} by <strong>{{ post.author }}</strong>
+                            </small>
+                    </div>
+                    <p class="card-text">{{ post.body | safe | striptags |truncatewords:20 }}</p>
+                    <div>
+                        <a href="{{ post.get_absolute_url }}" class="btn btn-primary">
+                        Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% include "pagination.html" with page=posts %}
+{% endblock content %}
